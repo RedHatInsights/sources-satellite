@@ -20,8 +20,18 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         command:
+        - /usr/bin/haberdasher
+        args:
         - bin/satellite-operations
         env:
+        - name: HABERDASHER_EMITTER
+          value: ${HABERDASHER_EMITTER}
+        - name: HABERDASHER_KAFKA_BOOTSTRAP
+          value: ${HABERDASHER_KAFKA_BOOTSTRAP}
+        - name: HABERDASHER_KAFKA_TOPIC
+          value: ${HABERDASHER_KAFKA_TOPIC}
+        - name: LOG_HANDLER
+          value: ${LOG_HANDLER}
         - name: LOG_LEVEL
           value: ${LOG_LEVEL}
         - name: SOURCES_HOST
@@ -76,12 +86,23 @@ parameters:
 - description: Clowder ENV
   name: ENV_NAME
   required: true
+- description: Emitter for haberdasher logs [stderr|kafka]
+  name: HABERDASHER_EMITTER
+  value: stderr
+- description: Bootstrap server for haberdasher kafka emitter
+  name: HABERDASHER_KAFKA_BOOTSTRAP
+  value: ''
+- description: Kafka topic for haberdasher kafka emitter
+  name: HABERDASHER_KAFKA_TOPIC
+  value: ''
 - description: Image
   name: IMAGE
   value: quay.io/cloudservices/sources-satellite
 - description: Image tag
   name: IMAGE_TAG
   required: true
+- name: LOG_HANDLER
+  value: 'built-in'
 - name: LOG_LEVEL
   value: WARN
 - name: MEMORY_LIMIT
