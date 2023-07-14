@@ -12,7 +12,6 @@ RUN dnf -y --disableplugin=subscription-manager module enable ruby:2.6 && \
       && \
     dnf --disableplugin=subscription-manager clean all
 
-USER 0
 
 ENV WORKDIR /opt/satellite-operations/
 WORKDIR $WORKDIR
@@ -22,8 +21,9 @@ COPY Gemfile.lock $WORKDIR
 RUN echo "gem: --no-document" > ~/.gemrc && \
     gem install bundler --conservative --without development:test && \
     bundle install --jobs 8 --retry 3 && \
-    rm -rvf $(gem env gemdir)/cache/* && \
     rm -rvf /root/.bundle/cache
+
+RUN chmod 777 /usr/share/gems/cache/bundler/git
 
 COPY . $WORKDIR
 
